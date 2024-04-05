@@ -1,0 +1,42 @@
+/* Sidebar.css */
+.sidebar {
+    width: 250px; /* Default width */
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: width 0.3s ease-in-out;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-closed {
+    width: 50px; /* Reduced width when sidebar is closed */
+}
+
+.toggle-button {
+    position: absolute;
+    top: 0;
+    right: 0; /* Position the toggle on the right edge of the sidebar */
+    margin-top: 10px; /* Slight adjustment */
+    color: white;
+}
+
+/* Keep the icons centered and spaced-out in the closed sidebar */
+.sidebar-closed .MuiListItemIcon-root {
+    margin-left: 0;
+    justify-content: center; /* Center align icon */
+    min-width: 0; /* Remove min-width */
+}
+
+.sidebar-closed .MuiListItemText-root {
+    display: none; /* Hide text labels when sidebar is closed */
+}
+
+/* Ensure the ListItem does not squeeze the icon when sidebar is closed */
+.sidebar-closed .MuiListItem-root {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}

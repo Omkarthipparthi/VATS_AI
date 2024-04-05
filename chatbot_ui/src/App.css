@@ -1,38 +1,109 @@
 .App {
-  position: relative;
+  display: flex;
+  flex-direction: column; /* Stack header, main content, and footer vertically */
   min-height: 100vh;
 }
 
 header, footer {
   padding: 20px;
   background-color: #f0f0f0;
-}
-
-.dashboard {
   position: fixed;
-  left: 0;
+  z-index: 1000;
+  width: calc(100% - 250px); /* Adjust the width based on sidebar visibility */
+  transition: width 0.3s ease;
+}
+
+.sidebar-closed header, 
+.sidebar-closed footer {
+  width: calc(100% - 50px); /* Adjust the width when the sidebar is closed */
+}
+
+header {
   top: 0;
-  width: 250px;
-  height: 100%;
-  background-color: #ddd;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
+  left: 250px; /* Set the left position to match the sidebar width */
 }
 
-.dashboard.visible {
-  transform: translateX(0);
+footer {
+  bottom: 0;
+  left: 250px;
+  z-index: 1000; /* Set the left position to match the sidebar width */
 }
 
+.sidebar-closed header,
+.sidebar-closed footer {
+  left: 50px; /* Adjust left position when the sidebar is closed */
+}
+
+/* Adjustments for the sidebar-toggle are not needed as we're controlling the sidebar from within */
+
+/* Sidebar CSS */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0; /* Adjusted to be visible by default */
+  width: 250px; /* Width of the open sidebar */
+  background-color: #333;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar-closed {
+  width: 50px; /* Width of the closed sidebar */
+}
+
+/* Main content CSS to respond to sidebar state */
+
+
+.main-content {
+  flex-grow: 1;
+  transition: padding-left 0.3s ease;
+  padding-left: 250px; /* Padding to account for the open sidebar */
+  padding-top: 60px; /* Height of the header */
+  padding-bottom: 60px; /* Height of the footer */
+}
+
+.sidebar-closed .main-content {
+  padding-left: 50px; /* Padding to account for the closed sidebar */
+}
+/* ChatBot CSS */
 .chat-toggle {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  bottom: 60px;
   cursor: pointer;
+  z-index: 1010; /* Ensure it's above the sidebar and content */
 }
 
-/* Add more styles for ChatBot component as needed */
+.chat-icon {
+  width: 50px; /* Reduced size, adjust as needed */
+  height: 50px; /* Maintain aspect ratio */
+}
 
+/* Style adjustments when chat is active */
+.App.chat-active .chat-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+  z-index: 2000; /* Below the chat container, above everything else */
+}
 
+/* Ensure chat container is above the overlay */
+.chat-container {
+  z-index: 3000; /* Above the overlay */
+}
+
+.App.chat-active .main-content,
+.App.chat-active header,
+.App.chat-active footer {
+  opacity: 0.5; /* Dim the content */
+}
+
+/* ... Existing styles for animations and other elements ... */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -46,9 +117,10 @@ header, footer {
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  width: 100%;
+  min-height: 60px; /* Fixed height */
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);

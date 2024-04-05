@@ -1,0 +1,28 @@
+/* .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .course-card {
+    width: 250px;
+    color: white;
+    margin-bottom: 20px;
+  }
+   */
+
+.course-card {
+width: 300px; /* Fixed card width, adjust as necessary */
+margin: 20px; /* Space around cards */
+}
+
+/* Use a flexbox layout for the cards container */
+.cards-container {
+display: flex;
+flex-wrap: wrap;
+gap: 20px; /* Space between cards */
+align-items: flex-start; /* Align cards at the top of the container */
+justify-content: flex-start; /* Align cards at the start of the main content */
+padding: 20px; /* Padding inside the cards container */
+}

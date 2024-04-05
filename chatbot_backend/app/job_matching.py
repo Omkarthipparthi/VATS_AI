@@ -556,7 +556,8 @@ class chat_gen():
         for kb_doc in kb_docs:
             a += str(kb_doc.metadata["page"]) + ":" + kb_doc.page_content
 
-        a += 'Only return JSON, Below is my resume, I am applying to various job postings to secure employement, you are an expert career advisor, Based on my resume, suggest me TOP THREE MOST SUITABLE JOBS and rank them in order with percentiles in accordance with the job postings available above. Please output in a json format containing keys job title, matching score, and Description of why you think its match'
+        # a += 'Only return JSON, Below is my resume, I am applying to various job postings to secure employement, you are an expert career advisor, Based on my resume, suggest me TOP THREE MOST SUITABLE JOBS and rank them in order with percentiles in accordance with the job postings available above. Please output in a json format containing keys job title, matching score, and Description of why you think its match'
+        a += 'Only return a table in string format and in the output have the keys and values in new lines without any double quotes or colons or brackets, Below is my resume, I am applying to various job postings to secure employement, you are an expert career advisor, Based on my resume, suggest me TOP THREE MOST SUITABLE JOBS and rank them in order with percentiles in accordance with the job postings available above. Make sure to have each job and its key value pairs in new lines.'
         for doc in docs:
             a += str(doc.metadata["page"]) + ":" + doc.page_content
 

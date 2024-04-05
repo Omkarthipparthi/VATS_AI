@@ -127,32 +127,62 @@ const ChatBot = () => {
     setAttachedFile(null);
   };
 
-  return (
-    <div className="chat-container">
-      <div className="chat-header">Doc Chat Bot</div>
-      <div className="chat-messages">
-        {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.text}
-          </div>
-        ))}
-      </div>
-      <div className="chat-input">
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="Type your message here..."
-        />
-        <input
-          type="file"
-          onChange={(e) => setAttachedFile(e.target.files[0])}
-        />
-        <button onClick={sendMessage}>Send</button>
-      </div>
+//   return (
+//     <div className="chat-container">
+//       <div className="chat-header">Doc Chat Bot</div>
+//       <div className="chat-messages">
+//       <div className="w-8 border rounded-full"></div>
+//         {messages.map((message, index) => (
+//           <div key={index} className={`message ${message.sender}`}>
+//             {message.text}
+//           </div>
+         
+//         ))}
+//       </div>
+//       <div className="chat-input">
+//         <input
+//           type="text"
+//           value={inputText}
+//           onChange={(e) => setInputText(e.target.value)}
+//           onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+//           placeholder="Type your message here..."
+//         />
+//         <input
+//           type="file"
+//           onChange={(e) => setAttachedFile(e.target.files[0])}
+//         />
+//         <button onClick={sendMessage}>Send</button>
+//       </div>
+//     </div>
+//   );
+// };
+
+return (
+  <div className="chat-container">
+    <div className="chat-header">Doc Chat Bot</div>
+    <div className="chat-messages">
+      {messages.map((message, index) => (
+        <div key={index} className={`message ${message.sender}`}>
+          {message.text}
+        </div>
+      ))}
     </div>
-  );
+    <div className="chat-input">
+      <input
+        type="text"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+        placeholder="Type your message here..."
+      />
+      <input
+        type="file"
+        onChange={(e) => setAttachedFile(e.target.files[0])}
+      />
+      <button onClick={sendMessage}>Send</button>
+    </div>
+  </div>
+);
 };
 
 export default ChatBot;

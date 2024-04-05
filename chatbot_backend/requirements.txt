@@ -17,3 +17,4 @@ faiss-cpu
 langchainhub
 langchain-openai
 shutil
+langchain_experimental
