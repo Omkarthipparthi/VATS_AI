@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from langchain import hub
 from langchain import hub
 from langchain_community.document_loaders import WebBaseLoader
@@ -58,6 +59,12 @@ from langchain_experimental.tabular_synthetic_data.prompts import (
 )
 from langchain_openai import ChatOpenAI
 
+
+load_dotenv()  # Take environment variables from .env.
+
+MY_ENV_VAR = os.getenv('OPENAI_API_KEY')
+
+
 class MCQ(BaseModel):
     id: int
     wholeQuestion: str
@@ -104,37 +111,35 @@ examples = [
     },
         
 ]
+class exam_prep_aid_generation():
+    def generation():
+        OPENAI_TEMPLATE = PromptTemplate(input_variables=["example"], template="{example}")
 
-OPENAI_TEMPLATE = PromptTemplate(input_variables=["example"], template="{example}")
-
-prompt_template = FewShotPromptTemplate(
-    prefix=SYNTHETIC_FEW_SHOT_PREFIX,
-    examples=examples,
-    suffix=SYNTHETIC_FEW_SHOT_SUFFIX,
-    input_variables=["subject", "extra"],
-    example_prompt=OPENAI_TEMPLATE,
-)
-
-
-synthetic_data_generator = create_openai_data_generator(
-    output_schema=MCQ,
-    llm=ChatOpenAI(temperature=1, openai_api_key = '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', model_name = 'gpt-4'), 
-    prompt=prompt_template,
-)
+        prompt_template = FewShotPromptTemplate(
+            prefix=SYNTHETIC_FEW_SHOT_PREFIX,
+            examples=examples,
+            suffix=SYNTHETIC_FEW_SHOT_SUFFIX,
+            input_variables=["subject", "extra"],
+            example_prompt=OPENAI_TEMPLATE,
+        )
 
 
-synthetic_results = synthetic_data_generator.generate(
-    subject="statistics",
-    extra="Generate multiple-choice question (MCQ) , Ensure it reflects our examples, and every question you generate must be unique, Ensure the question is clear, with one correct answer and three plausible distractors.",
-    runs=5, 
-)
+        synthetic_data_generator = create_openai_data_generator(
+            output_schema=MCQ,
+            llm=ChatOpenAI(temperature=1, openai_api_key = MY_ENV_VAR, model_name = 'gpt-4'), 
+            prompt=prompt_template,
+        )
 
 
-print(synthetic_results)
+        synthetic_results = synthetic_data_generator.generate(
+            subject="statistics",
+            extra="Generate multiple-choice question (MCQ) , Ensure it reflects our examples, and every question you generate must be unique, Ensure the question is clear, with one correct answer and three plausible distractors.",
+            runs=2, 
+        )
 
 
-
-
+        print(type(synthetic_results), "Here man Here ")
+        return synthetic_results
 
 
 
@@ -142,7 +147,11 @@ print(synthetic_results)
 
 
 
-# client = OpenAI(api_key = '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')
+
+
+
+
+# client = OpenAI(api_key = MY_ENV_VAR)
 
 # response = client.chat.completions.create(
 #   model="gpt-3.5-turbo-0125",

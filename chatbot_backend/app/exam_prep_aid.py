@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from langchain import hub
 from langchain import hub
 from langchain_community.document_loaders import WebBaseLoader
@@ -57,6 +58,10 @@ from langchain_experimental.tabular_synthetic_data.prompts import (
     SYNTHETIC_FEW_SHOT_SUFFIX,
 )
 from langchain_openai import ChatOpenAI
+
+load_dotenv()  # Take environment variables from .env.
+
+MY_ENV_VAR = os.getenv('OPENAI_API_KEY')
 
 class MCQ(BaseModel):
     id: int
@@ -118,7 +123,7 @@ prompt_template = FewShotPromptTemplate(
 
 synthetic_data_generator = create_openai_data_generator(
     output_schema=MCQ,
-    llm=ChatOpenAI(temperature=1, openai_api_key = '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', model_name = 'gpt-4'), 
+    llm=ChatOpenAI(temperature=1, openai_api_key = MY_ENV_VAR, model_name = 'gpt-4'), 
     prompt=prompt_template,
 )
 
@@ -142,7 +147,7 @@ print(synthetic_results)
 
 
 
-# client = OpenAI(api_key = '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')
+# client = OpenAI(api_key = MY_ENV_VAR)
 
 # response = client.chat.completions.create(
 #   model="gpt-3.5-turbo-0125",
