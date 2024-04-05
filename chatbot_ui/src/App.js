@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import './App.css';
 import ChatBot from './components/ChatBot';
+import { ReactComponent as ChatIcon } from './chat-icon.svg'; // Assuming you have an SVG icon
+import Sidebar from './components/SideBar';
+import Cards from './components/Cards';
+<ChatIcon className="chat-icon" />
 import Sidebar from './components/SideBar';
 import Cards from './components/Cards';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRocketchat } from '@fortawesome/free-brands-svg-icons';// Using the comment icon as an example
 
 function App() {
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [isChatVisible, setIsChatVisible] = useState(false);
 

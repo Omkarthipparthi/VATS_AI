@@ -86,7 +86,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         
         return JSONResponse(status_code=200, content={"filename": file.filename, "data": jobs })
     except Exception as e:
-        # If there's an error updating the path, return a 500 error
+            # If there's an error updating the path, return a 500 error
         raise HTTPException(status_code=500, detail=str(e))
     
 
