@@ -1,23 +1,29 @@
 // ChatBot.js
 import React, { useState, useEffect } from 'react';
 import './ChatBot.css';
-
+import { Button, TextField, Paper, Typography, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material'; // Import Fade for animation
+import { Box} from '@mui/material';
 
 const OptionButtons = ({ onSelectOption }) => (
-  <div className="options-input">
-    <button onClick={() => onSelectOption('1')}>Homework Helper</button>
-    <button onClick={() => onSelectOption('2')}>Job Matching</button>
-    <button onClick={() => onSelectOption('3')}>Exam Prep Aid</button>
-  </div>
+  <FormControl component="fieldset">
+    <FormLabel component="legend">Choose an option</FormLabel>
+    <RadioGroup aria-label="chat-options">
+      <Box sx={{ '& .MuiFormControlLabel-root': { mb: 2 } }}> {/* Apply bottom margin to each FormControlLabel */}
+        <FormControlLabel value="1" control={<Radio />} label="Homework Helper" onClick={() => onSelectOption('1')} />
+        <FormControlLabel value="2" control={<Radio />} label="Job Matching" onClick={() => onSelectOption('2')} />
+        <FormControlLabel value="3" control={<Radio />} label="Exam Prep Aid" onClick={() => onSelectOption('3')} />
+      </Box>
+    </RadioGroup>
+  </FormControl>
 );
 
 const ChatBot = () => {
-  const [messages, setMessages] = useState([{ text: 'Select an option:\n1) Homework Helper\n2) Job Matching\n3) Exam Prep Aid', sender: 'bot' }]);
+  const [messages, setMessages] = useState([{ text: 'Select an option:\n1) Homework Helper \n2) Job Matching \n3) Exam Prep Aid', sender: 'bot' }]);
   const [inputText, setInputText] = useState('');
   const [attachedFile, setAttachedFile] = useState(null);
   const [selectedOption, setSelectedOption] = useState('');
-  const [mcqs, setMcqs] = useState([]); // This will be set with the API call fetching the MCQs
-  const [selections, setSelections] = useState({}); 
+  const [mcqs, setMcqs] = useState([]);
+  const [selections, setSelections] = useState({});
 
 
   useEffect(() => {
@@ -193,59 +199,43 @@ const ChatBot = () => {
 // };
 
 return (
-  <div className="chat-container">
-    <div className="chat-header">Doc Chat Bot</div>
+  // Changes start from line 50
+  <Paper elevation={3} className="chat-container">
+    <Typography variant="h6" className="chat-header">VATS-AI Buddy</Typography>
     <div className="chat-messages">
       {messages.map((message, index) => (
-        <div key={index} className={`message ${message.sender}`}>
+        <Typography key={index} component="div" className={`message ${message.sender}`}>
           {message.text}
           {message.withOptions && <OptionButtons onSelectOption={handleOptionSelection} />}
-        </div>
+        </Typography>
       ))}
       {selectedOption === '3' && mcqs.map(mcq => (
-        <div key={mcq.id} className="mcq-container">
-          <p>{mcq.wholeQuestion}</p>
-          {mcq.allOptions.map(option => (
-            <label key={option}>
-              <input
-                type="radio"
-                name={`mcq-${mcq.id}`}
-                value={option}
-                checked={selections[mcq.id] === option}
-                onChange={() => handleMCQSelection(mcq.id, option)}
-              />
-              {option}
-            </label>
-          ))}
-        </div>
+        <Paper key={mcq.id} className="mcq-container">
+          <Typography variant="body1">{mcq.wholeQuestion}</Typography>
+          <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''} onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}>
+            {mcq.allOptions.map(option => (
+              <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
+            ))}
+          </RadioGroup>
+        </Paper>
       ))}
       {selectedOption === '3' && (
-        <button className="submit-mcqs-btn" onClick={submitAnswers}>
-          Submit Answers
-        </button>
+        <Button variant="contained" color="primary" onClick={submitAnswers} className="submit-mcqs-btn">Submit Answers</Button>
       )}
     </div>
     {selectedOption ? (
       <div className="chat-input">
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder={selectedOption === '1' ? "Ask your question..." : "Input for exam prep..."}
-        />
+        <TextField fullWidth label="Type your message here..." variant="outlined" value={inputText} onChange={(e) => setInputText(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && sendMessage()} />
         {selectedOption === '2' && (
-          <input
-            type="file"
-            onChange={(e) => setAttachedFile(e.target.files[0])}
-          />
+          // Assuming you'll adjust file input styling accordingly
+          <input type="file" onChange={(e) => setAttachedFile(e.target.files[0])} style={{margin: '0 10px'}} />
         )}
-        <button onClick={sendMessage}>Send</button>
+        <Button variant="contained" color="primary" onClick={sendMessage}>Send</Button>
       </div>
-    ): null}
-  </div>
+    ) : null}
+  </Paper>
+  // Changes end at line 83
 );
 };
 
-
-export default ChatBot;
+export default ChatBot; 

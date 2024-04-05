@@ -1,90 +1,110 @@
-/* ChatBot.css */
-
-/* .chat-container {
-    background-color: #121212;
-    color: white;
-    max-width: 400px;
-    margin: auto;
-    border: 1px solid #333;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    height: 500px;
-  } */
-  
-
-
-  /* Inside ChatBot.css */
+/* ChatBot.css adjustments */
 .chat-container {
   position: fixed;
-  right: 20px;
-  bottom: 70px; /* Adjust based on your toggle button size */
-  z-index: 1000; /* Ensure it's above other content */
-  width: 300px; /* Adjust size as needed */
-  height: 400px; /* Adjust size as needed */
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
+  z-index: 2000;
+  background-color: #ffffff; /* Assuming a light theme */
+  border-radius: 10px; /* Rounded corners for the chatbot */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* Material-UI-like shadow */
+  overflow: hidden; /* Ensures that the child components don't overflow the rounded corners */
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #f0f0f0; /* Light grey background for the messages area */
+}
+
+.chat-header {
+  background-color: #5c6bc0; /* Using MUI's Indigo color */
+  color: #fff;
+  padding: 16px;
+  text-align: center;
+  font-size: 1.25rem; /* Material-UI default font size for h5 */
+}
+
+:root {
+  /* Existing variables plus new ones for the input fields */
+  --input-bg-color: #ffffff; /* White background for consistency */
+  --border-color: #e0e0e0; /* Light grey border color for inputs and the chat-input area */
+  --input-padding: 12px; /* Slightly larger padding for a more spacious feel */
+  --input-border-radius: 6px; /* Increased border-radius for a softer, more modern look */
+}
+
+.chat-input {
+  padding: 12px; /* Increased padding for more space */
+  background-color: var(--input-bg-color); /* Using variable for background color */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color); /* Using variable for border color */
+}
+
+.chat-input input[type="text"], .chat-input input[type="file"] {
+  padding: var(--input-padding); /* Using variable for padding */
+  margin-right: 10px; /* Keeping the margin-right to space elements */
+  border: 1px solid var(--border-color); /* Using variable for border */
+  border-radius: var(--input-border-radius); /* Using variable for border-radius */
+  flex-grow: 1;
+  /* Adjusting typography to match the modern theme if necessary */
+}
+
+/* Optionally, adding focus styles for inputs to improve usability */
+.chat-input input[type="text"]:focus, .chat-input input[type="file"]:focus {
+  border-color: var(--button-bg-color); /* Highlight focus with the button's background color */
+  box-shadow: 0 0 0 2px rgba(92, 107, 192, 0.2); /* Adding a subtle glow effect on focus */
+  outline: none; /* Removing the default focus outline */
+}
+
+:root {
+  --button-bg-color: #5c6bc0; /* Primary color */
+  --button-hover-bg-color: #3949ab; /* Darker shade for hover state */
+  --button-text-color: white; /* Text color */
+  --border-radius: 6px; /* Increased border-radius for a more modern, rounded look */
+  --transition-speed: 0.3s; /* Standardizing transition speed */
+}
+
+.chat-input button {
+  padding: 12px 24px; /* Slightly larger padding for a more comfortable click area */
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth, modern look */
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, 
+              box-shadow var(--transition-speed) ease; /* Smooth transition for both color and shadow */
+}
+
+.chat-input button:hover, .chat-input button:focus {
+  background-color: var(--button-hover-bg-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Slightly larger shadow on hover for a 'lifting' effect */
+  outline: none; /* Removing outline on focus, consider replacing with a more accessible indication if needed */
 }
 
 
+.message.user, .message.bot {
+  max-width: 80%;
+  word-wrap: break-word;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 20px; /* More pronounced rounded corners for messages */
+}
 
-  .chat-header {
-    background-color: #333;
-    padding: 16px;
-    font-size: 24px;
-    text-align: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-  
-  .chat-messages {
-    padding: 16px;
-    overflow-y: auto;
-    flex-grow: 1;
-  }
-  
-  .message {
-    margin-bottom: 12px;
-    padding: 8px;
-    border-radius: 16px;
-    max-width: 70%;
-  }
-  
-  .message.user {
-    background-color: #0d6efd;
-    color: white;
-    align-self: flex-end;
-  }
-  
-  .message.bot {
-    background-color: #242424;
-    color: white;
-    align-self: flex-start;
-  }
-  
-  .chat-input {
-    padding: 16px;
-    border-top: 1px solid #333;
-    display: flex;
-  }
-  
-  .chat-input input {
-    flex-grow: 1;
-    padding: 8px;
-    margin-right: 8px;
-    border: none;
-    border-radius: 16px;
-  }
-  
-  .chat-input button {
-    padding: 8px 16px;
-    background-color: #0d6efd;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-  }
-  
+.message.user {
+  background-color: #5c6bc0; /* Indigo for user messages */
+  color: white;
+  align-self: flex-end;
+}
+
+.message.bot {
+  background-color: #e0e0e0; /* Light grey for bot messages */
+  align-self: flex-start;
+}

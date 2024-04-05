@@ -1,3 +1,4 @@
+import os
 from typing import Dict, List
 from dotenv import load_dotenv
 from langchain.prompts import PromptTemplate

@@ -1,0 +1,20 @@
+.course-card {
+  width: 300px; /* Fixed card width, adjust as necessary */
+  margin: 20px; /* Space around cards */
+  border-radius: 8px; /* Rounded corners for the card */
+  transition: transform 0.3s ease-in-out; /* Smooth transform transition */
+}
+
+.course-card:hover {
+  transform: translateY(-10px); /* Slight lift effect on hover */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2); /* Shadow effect for depth */
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between cards */
+  align-items: flex-start; /* Align cards at the top of the container */
+  justify-content: flex-start; /* Align cards at the start of the main content */
+  padding: 20px; /* Padding inside the cards container */
+}
