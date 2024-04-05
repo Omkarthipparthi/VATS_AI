@@ -1,3 +1,4 @@
 chatbot_ui/node_modules
 chatbot_ui/.env
+chatbot_ui/package-lock.json
 chatbot_backend/.env
