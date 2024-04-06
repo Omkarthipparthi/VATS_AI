@@ -107,85 +107,50 @@ const ChatBot = () => {
     }
   };
 
+  // const handleMCQSelection = (mcqId, option) => {
+  //   setSelections(prevSelections => ({
+  //     ...prevSelections,
+  //     [mcqId]: option
+  //   }));
+  // };
+
   const handleMCQSelection = (mcqId, option) => {
+    setMcqs(mcqs.map(mcq => {
+      if (mcq.id === mcqId) {
+        // Here you evaluate the option right away and set the isCorrect property
+        return {
+          ...mcq,
+          userSelected: option,
+          isCorrect: mcq.correctOption === option
+        };
+      }
+      return mcq;
+    }));
     setSelections(prevSelections => ({
       ...prevSelections,
       [mcqId]: option
     }));
   };
-
-
-  const handleNextStepsSelection = async (option) => {
-    if (option === 'More Questions') {
-      // Clear previous MCQs and selections
-      setMcqs([]);
-      setSelections({});
-  
-      // Fetch new MCQs from the server
-      const response = await fetch('http://localhost:8000/exam-prep-aid-generation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: "inputText" }), // Replace "inputText" with an appropriate value or logic
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setMcqs(data.mcqs);
-        // Create a message indicating new MCQs have been loaded
-        setMessages([...messages, { text: 'New questions:', sender: 'bot' }]);
-      } else {
-        console.error('Failed to fetch new MCQs');
-        setMessages([...messages, { text: 'Failed to load new questions. Please try again.', sender: 'bot' }]);
-      }
-    } else {
-      // Reset the chat
-      setMessages([{ text: 'Select an option:\n1) Homework Helper\n2) Job Matching\n3) Exam Prep Aid', sender: 'bot', withOptions: true }]);
-      setInputText('');
-      setAttachedFile(null);
-      setSelectedOption('');
-      setMcqs([]);
-      setSelections({});
-    }
-  };
   
 
-
-  // const submitAnswers = async () => {
-    
-  //   const response = await fetch('http://localhost:8000/exam-prep-aid-evaluation', {
-  //     method: 'POST',
-  //     body: JSON.stringify({ selections, mcqs }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   });
-  //   if (response.ok) {
-  //     const result = await response.json();
-  //     // Display result to user
-  //     console.log(result);
-  //     setMcqs(result);
-  //     setSelections({});
-  //   } else {
-  //     // Handle errors
-  //     console.error('Failed to submit answers');
-  //   }
-  // };
 
   const submitAnswers = async () => {
+
     const response = await fetch('http://localhost:8000/exam-prep-aid-evaluation', {
       method: 'POST',
       body: JSON.stringify({ selections, mcqs }),
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     if (response.ok) {
-      const { results, next_steps } = await response.json();
-      // Highlight correct and wrong answers and show them
-      setMcqs(results);
-      // Show next steps options
+      const result = await response.json();
+      // Display result to user
+      console.log(result);
+      setMcqs(result);
       setSelections({});
-      handleEvaluationResults(results); // Assuming this function updates your mcqs state.
-      setMessages(m => [...m, { text: 'Choose the next step:', sender: 'bot', withOptions: true, nextSteps: next_steps }]);
     } else {
+      // Handle errors
       console.error('Failed to submit answers');
     }
   };
@@ -249,64 +214,21 @@ return (
       // Log the message to the console for debugging purposes
       console.log(`Rendering message:`, message);
 
-      if (message.nextSteps) {
-        // Define next step options with values that map to '4' and '5'
-        const nextStepOptions = [
-          { value: '4', label: 'More Questions' },
-          { value: '5', label: 'Exit' },
-        ];
-    
-        return (
-          <div key={index}>
-            <Typography>{message.text}</Typography>
-            <OptionButtons
-              onSelectOption={handleNextStepsSelection}
-              options={nextStepOptions}
-            />
-          </div>
-        );
-      }
       
       return (
         <div key={index} className={`message ${message.sender}`}>
           <Typography>{message.text}</Typography>
           {message.withOptions && (
             <OptionButtons
-              onSelectOption={message.nextSteps ? handleNextStepsSelection : handleOptionSelection}
-              options={message.nextSteps || message.options}
+              onSelectOption={handleOptionSelection}
+              options={ message.options}
             />
           )}
         </div>
       );
     })}
-{/* {selectedOption === '3' && mcqs.map(mcq => (
-  <Paper key={mcq.id} className="mcq-container">
-    <Typography variant="body1">{mcq.wholeQuestion}</Typography>
-    <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
-    onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}>
-      {mcq.allOptions.map(option => {
-        // Determine if this option is the selected one and if it's correct or incorrect
-        const isSelected = mcq.userSelected === option;
-        let style = {};
-        if (isSelected) {
-          style = mcq.isCorrect ? correctStyle : incorrectStyle;
-        }
-        return (
-          <FormControlLabel
-            key={option}
-            value={option}
-            control={<Radio />}
-            label={option}
-            disabled={mcq.userSelected !== undefined} // Disable if an answer has been selected
-            style={style}
-          />
-        );
-      })}
-    </RadioGroup>
-  </Paper>
-))} */}
 
-{selectedOption === '3' && mcqs.map(mcq => (
+{/* {selectedOption === '3' && mcqs.map(mcq => (
   <Paper key={mcq.id} className="mcq-container">
     <Typography variant="body1">{mcq.wholeQuestion}</Typography>
     <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
@@ -330,6 +252,36 @@ return (
             label={option}
             disabled={mcq.userSelected !== undefined} // Disable if an answer has been selected
             style={style}
+          />
+        );
+      })}
+    </RadioGroup>
+  </Paper>
+))} */}
+
+{selectedOption === '3' && mcqs.map(mcq => (
+  <Paper key={mcq.id} className="mcq-container">
+    <Typography variant="body1">{mcq.wholeQuestion}</Typography>
+    <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
+    onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}>
+      {mcq.allOptions.map(option => {
+        // Determine the style based on whether the option is correct, incorrect,
+        // and whether it should be highlighted as the correct answer
+        const isUserSelected = selections[mcq.id] === option;
+        let optionStyle = {};
+        if (isUserSelected) {
+          optionStyle = mcq.isCorrect ? correctStyle : incorrectStyle;
+        } else if (!isUserSelected && mcq.correctOption === option && selections[mcq.id] !== undefined) {
+          // Apply correctStyle to the correct option if a wrong option was selected
+          optionStyle = correctStyle;
+        }
+        return (
+          <FormControlLabel
+            key={option}
+            value={option}
+            control={<Radio />}
+            label={option}
+            style={optionStyle}
           />
         );
       })}
