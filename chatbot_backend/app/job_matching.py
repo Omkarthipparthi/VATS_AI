@@ -538,34 +538,35 @@ MY_ENV_VAR = os.getenv('OPENAI_API_KEY')
 #     score: str = Field(description="The model evaluates the resume and provides a matching score")
 #     reasoning: str = Field(description="The model evaluates why provides reasoning")
 
-class chat_gen():
-    def update_pdf_file_path(self, new_path: str):
-        llm = ChatOpenAI(model_name = 'gpt-4', openai_api_key=MY_ENV_VAR)
+class chat_gen:
+    def _init_(self):
+        self.chat_history = []
+        self.OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', MY_ENV_VAR)
 
+    def load_doc(self):
 
-        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=30, separator="\n")
+        pass
+    
 
-        kb_docs = PyPDFLoader('data/json.pdf').load()
-        kb_docs = text_splitter.split_documents(documents=kb_docs)
-
-
-        docs = PyPDFLoader('./data/Anshul_Mallick.pdf').load() 
-        docs = text_splitter.split_documents(documents=docs)
-
+    def load_model(self,):
+        embeddings = OpenAIEmbeddings()
+        vectorstore = FAISS.load_local("jd_vector", embeddings, allow_dangerous_deserialization=True)
+        retriever = vectorstore.as_retriever()
+        llm = ChatOpenAI(openai_api_key=MY_ENV_VAR, model_name = 'gpt-4')
+        # chain = load_qa_chain(llm, chain_type="stuff",verbose=True)
+        retrieval_chain = RetrievalQA.from_chain_type(llm, chain_type="stuff", retriever=retriever)
+        return retrieval_chain
+    
+    def update_pdf_file_path(self, attachedFile):
+        docs = PyPDFLoader(attachedFile).load() 
         a = ''
-        for kb_doc in kb_docs:
-            a += str(kb_doc.metadata["page"]) + ":" + kb_doc.page_content
-
-        # a += 'Only return JSON, Below is my resume, I am applying to various job postings to secure employement, you are an expert career advisor, Based on my resume, suggest me TOP THREE MOST SUITABLE JOBS and rank them in order with percentiles in accordance with the job postings available above. Please output in a json format containing keys job title, matching score, and Description of why you think its match'
-        a += 'Only return a table in string format and in the output have the keys and values in new lines without any double quotes or colons or brackets, Below is my resume, I am applying to various job postings to secure employement, you are an expert career advisor, Based on my resume, suggest me TOP THREE MOST SUITABLE JOBS and rank them in order with percentiles in accordance with the job postings available above. Make sure to have each job and its key value pairs in new lines.'
+        docs = CharacterTextSplitter(chunk_size=1025, chunk_overlap=30, separator="\n").split_documents(documents=docs)
         for doc in docs:
             a += str(doc.metadata["page"]) + ":" + doc.page_content
+        llm = self.load_model()
+        b = llm.run('Given my resume below, generate my top 5 skills in just 5 words: ' + a)
+        c = llm.run('Note: Only suggest two unique job postings in your context, do not generate random and generic job postings (such as data analyst , software engineer) of what you feel would be better to my skills, I want you to match already exsisting postings in your context with my skills, Make sure to print the exact Job names, and Job Id, from the context, I am a computer science major' + b)
 
-        result = llm.invoke(a)
-        print(result.content)
-        return result.content
+        return c
 
-if __name__ == '_main_':
-    chat = chat_gen()
-    print(chat.ask_pdf('what are p-values?'))
-    # print(chat.ask_pdf('what are few of its applications?'))
+

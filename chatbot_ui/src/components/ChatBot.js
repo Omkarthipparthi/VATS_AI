@@ -54,7 +54,7 @@ const ChatBot = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [mcqs, setMcqs] = useState([]);
   const [selections, setSelections] = useState({});
-
+  const [fileName, setFileName] = useState('')
 
   useEffect(() => {
     const initialMessage = {
@@ -80,6 +80,29 @@ const ChatBot = () => {
   };
 
 
+  // Add a function to handle file selection, after line 40
+
+
+  const FilesManager = (event) =>{
+    setAttachedFile(event.target.files[0]); 
+    handleFileChange(event);
+  }
+
+  const handleFileChange = (event) => {
+
+    const file = event.target.files[0];
+
+    if (file) {
+
+      setAttachedFile(file);
+
+      setFileName(file.name); // Update the filename state
+
+      setMessages(messages => [...messages, { text: `File selected: ${file.name}`, sender: 'user' }]);
+
+    }
+
+  };
   const handleOptionSelection = async (option) => {
     console.log(`Option selected: ${option}`);
     setSelectedOption(option);
@@ -133,7 +156,13 @@ const ChatBot = () => {
   };
   
 
-
+  const formatJobMatches = (text) => {
+    return text.split('\n').map((line, index, array) => (
+      <React.Fragment key={index}>
+        {line}{index !== array.length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
   const submitAnswers = async () => {
 
     const response = await fetch('http://localhost:8000/exam-prep-aid-evaluation', {
@@ -167,6 +196,8 @@ const ChatBot = () => {
     } else if (selectedOption === '2' && attachedFile) {
       apiEndpoint = 'upload-pdf';
       formData.append('file', attachedFile);
+      setMessages(messages => [...messages, { text: `Uploading file: ${fileName}`, sender: 'user' }]); // Display the uploading file message
+
     } else if (selectedOption === '3') {
       // apiEndpoint = 'exam-prep-aid-generation';
       // formData.append('question', inputText);
@@ -194,7 +225,11 @@ const ChatBot = () => {
     } else if (selectedOption === '2' && attachedFile) {
       if (response.ok) {
         const data = await response.json();
-        setMessages(messages => [...messages, { text: `Here are your job matches ${data.data}`, sender: 'bot' }]);
+        // setMessages(messages => [...messages, { text: `Here are your job matches ${data.data}`, sender: 'bot' }]);
+        const formattedText = formatJobMatches(data.data);
+        setMessages(messages => [...messages, { text: <>{'Here are your job matches'}{formattedText}</>, sender: 'bot' }]);
+      
+      
       } else {
         setMessages(messages => [...messages, { text: "Failed to upload the file.", sender: 'bot' }]);
       }
@@ -227,37 +262,6 @@ return (
         </div>
       );
     })}
-
-{/* {selectedOption === '3' && mcqs.map(mcq => (
-  <Paper key={mcq.id} className="mcq-container">
-    <Typography variant="body1">{mcq.wholeQuestion}</Typography>
-    <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
-    onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}>
-      {mcq.allOptions.map(option => {
-        // Check if this option is the one selected by the user
-        const isUserSelected = mcq.userSelected === option;
-        // Apply styles based on whether the option is correct, incorrect, or the correct option when the user has selected wrongly
-        let style = {};
-        if (isUserSelected) {
-          style = mcq.isCorrect ? correctStyle : incorrectStyle;
-        } else if (mcq.userSelected !== undefined && !mcq.isCorrect && mcq.correctOption === option) {
-          // Apply correctStyle only if the user has already selected an option and it was wrong, and this option is the correct one
-          style = correctStyle;
-        }
-        return (
-          <FormControlLabel
-            key={option}
-            value={option}
-            control={<Radio />}
-            label={option}
-            disabled={mcq.userSelected !== undefined} // Disable if an answer has been selected
-            style={style}
-          />
-        );
-      })}
-    </RadioGroup>
-  </Paper>
-))} */}
 
 {selectedOption === '3' && mcqs.map(mcq => (
   <Paper key={mcq.id} className="mcq-container">
@@ -296,10 +300,13 @@ return (
     </div>
     {selectedOption ? (
       <div className="chat-input">
-        <TextField fullWidth label="Type your message here..." variant="outlined" value={inputText} onChange={(e) => setInputText(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && sendMessage()} />
+        <TextField fullWidth label="Type your message here..." variant="outlined" value={inputText} 
+        onChange={(e) => setInputText(e.target.value)} 
+        onKeyPress={(e) => e.key === 'Enter' && sendMessage()} />
         {selectedOption === '2' && (
           // Assuming you'll adjust file input styling accordingly
-          <input type="file" onChange={(e) => setAttachedFile(e.target.files[0])} style={{margin: '0 10px'}} />
+          <input type="file" onChange={FilesManager} style={{margin: '0 10px'}} 
+          />
         )}
         <Button variant="contained" color="primary" onClick={sendMessage}>Send</Button>
       </div>

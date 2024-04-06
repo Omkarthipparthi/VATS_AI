@@ -4,7 +4,7 @@ import './Cards.css'; // Make sure your CSS file path is correct
 
 const CardData = [
   {
-    title: 'CSE 535: Mobile Computing',
+    title: 'CSE 101: Fundamentals of Statistics',
     semester: '2023 Fall',
     color: '#6d597a',
   },
@@ -13,16 +13,16 @@ const CardData = [
     semester: '2023 Spring',
     color: '#b56576',
   },
-  {
-    title: 'CSE 545: Software Security',
-    semester: '2024 Fall',
-    color: '#b7b7a4',
-  },
-  {
-    title: 'CSE 578: Data Visualization',
-    semester: '2024 Spring',
-    color: '#223843',
-  },
+  // {
+  //   title: 'CSE 545: Software Security',
+  //   semester: '2024 Fall',
+  //   color: '#b7b7a4',
+  // },
+  // {
+  //   title: 'CSE 578: Data Visualization',
+  //   semester: '2024 Spring',
+  //   color: '#223843',
+  // },
 ];
 
 const CourseCard = ({ title, semester, color }) => {
