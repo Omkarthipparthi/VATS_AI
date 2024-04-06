@@ -13,7 +13,7 @@ Welcome to our project! This guide will walk you through setting up the project 
 First, clone the repository to your local machine:
 
 ```bash
-git clone <github_repo>
+git clone https://github.com/Omkarthipparthi/VATS_AI.git
 cd VATS_AI
 ```
 
