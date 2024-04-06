@@ -279,25 +279,65 @@ return (
         </div>
       );
     })}
-      {selectedOption === '3' && mcqs.map(mcq => (
-      <Paper key={mcq.id} className="mcq-container" style={mcq.isCorrect ? correctStyle : mcq.isCorrect === false ? incorrectStyle : {}}>
-        <Typography variant="body1">{mcq.wholeQuestion}</Typography>
-        <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
-        onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}
-        >
-          {mcq.allOptions.map(option => (
-            <FormControlLabel
-              key={option}
-              value={option}
-              control={<Radio />}
-              label={option}
-              disabled={mcq.userSelected !== undefined} // Disable if an answer has been selected
-              style={mcq.userSelected === option ? (mcq.isCorrect ? correctStyle : incorrectStyle) : {}}
-            />
-          ))}
-        </RadioGroup>
-      </Paper>
-    ))}
+{/* {selectedOption === '3' && mcqs.map(mcq => (
+  <Paper key={mcq.id} className="mcq-container">
+    <Typography variant="body1">{mcq.wholeQuestion}</Typography>
+    <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
+    onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}>
+      {mcq.allOptions.map(option => {
+        // Determine if this option is the selected one and if it's correct or incorrect
+        const isSelected = mcq.userSelected === option;
+        let style = {};
+        if (isSelected) {
+          style = mcq.isCorrect ? correctStyle : incorrectStyle;
+        }
+        return (
+          <FormControlLabel
+            key={option}
+            value={option}
+            control={<Radio />}
+            label={option}
+            disabled={mcq.userSelected !== undefined} // Disable if an answer has been selected
+            style={style}
+          />
+        );
+      })}
+    </RadioGroup>
+  </Paper>
+))} */}
+
+{selectedOption === '3' && mcqs.map(mcq => (
+  <Paper key={mcq.id} className="mcq-container">
+    <Typography variant="body1">{mcq.wholeQuestion}</Typography>
+    <RadioGroup name={`mcq-${mcq.id}`} value={selections[mcq.id] || ''}
+    onChange={(event) => handleMCQSelection(mcq.id, event.target.value)}>
+      {mcq.allOptions.map(option => {
+        // Check if this option is the one selected by the user
+        const isUserSelected = mcq.userSelected === option;
+        // Apply styles based on whether the option is correct, incorrect, or the correct option when the user has selected wrongly
+        let style = {};
+        if (isUserSelected) {
+          style = mcq.isCorrect ? correctStyle : incorrectStyle;
+        } else if (mcq.userSelected !== undefined && !mcq.isCorrect && mcq.correctOption === option) {
+          // Apply correctStyle only if the user has already selected an option and it was wrong, and this option is the correct one
+          style = correctStyle;
+        }
+        return (
+          <FormControlLabel
+            key={option}
+            value={option}
+            control={<Radio />}
+            label={option}
+            disabled={mcq.userSelected !== undefined} // Disable if an answer has been selected
+            style={style}
+          />
+        );
+      })}
+    </RadioGroup>
+  </Paper>
+))}
+
+
       {selectedOption === '3' && (
         <Button variant="contained" color="primary" onClick={submitAnswers} className="submit-mcqs-btn">Submit Answers</Button>
       )}
