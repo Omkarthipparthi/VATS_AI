@@ -113,13 +113,9 @@ class EvaluationRequest(BaseModel):
 @app.post("/exam-prep-aid-evaluation/")
 async def evaluate_mcq_selections(request: EvaluationRequest):
     try:
-        # Initialize the evaluation class
-        evaluator = exam_prep_aid_evaluation
-        print("PPT", request)
-        # Call the evaluation method
-        evaluation_results = evaluator.evaluation(request.selections, request.mcqs)
-        
-        # Return the evaluation results
+        evaluation_results = exam_prep_aid_evaluation.evaluation(request.selections, request.mcqs)
+        # Append the next step options to the evaluation results
+        evaluation_results["next_steps"] = ["More Questions", "Exit"]
         return evaluation_results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

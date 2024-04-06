@@ -76,6 +76,31 @@ examples = [
 class exam_prep_aid_evaluation:
     def evaluation(selections: Dict[int, str], mcqs: List[MCQ]):
         results = []
+        correct_ids = []
+        for mcq_id, user_selection in selections.items():
+            mcq = next((q for q in mcqs if q.id == mcq_id), None)
+            if mcq is None:
+                continue
+
+            is_correct = mcq.correctOption == user_selection
+            if is_correct:
+                correct_ids.append(mcq_id)
+
+            result = {
+                "id": mcq_id,
+                "wholeQuestion": mcq.wholeQuestion,
+                "allOptions": mcq.allOptions,
+                "correctOption": mcq.correctOption,
+                "userSelected": user_selection,
+                "isCorrect": is_correct
+            }
+            results.append(result)
+        
+        # Return both results and the correct ids
+        return {"results": results, "correct_ids": correct_ids}
+
+    def regenerate(selections: Dict[int, str], mcqs: List[MCQ]):
+        results = []
         for mcq_id, user_selection in selections.items():
             # Find the MCQ that matches the ID from the selections
             mcq = next((q for q in mcqs if q.id == mcq_id), None)
